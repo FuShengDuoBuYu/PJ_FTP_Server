@@ -1,4 +1,7 @@
 # include "file_util.h"
+#include <stdlib.h>
+#include <string.h>
+#include <direct.h>
 
 int file_exists(const char *filename){
     printf("file %s\n", filename);
@@ -42,4 +45,12 @@ int write_file_content(const char *filename, char *buffer){
     }
     fclose(fp);
     return 1;
+}
+
+// get current working directory
+char* get_current_dir(){
+    char* current_dir = (char*)malloc(sizeof(char)*MAX_FILE_SIZE);
+    memset(current_dir, 0, sizeof(current_dir));
+    getcwd(current_dir, 1024);
+    return current_dir;
 }

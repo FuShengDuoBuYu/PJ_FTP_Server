@@ -20,13 +20,13 @@ SOCKET create_tcp_socket();
 int bind_socket_local_port(SOCKET sclient, int port);
 
 //连接到服务端
-int connect_to_server(SOCKET sclient, char *ip, int port);
+int listen_to_client(SOCKET sclient, char *ip, int port);
 
 //发送数据
-int send_data_to_server(SOCKET sclient, char *sendbuf);
+int send_data_to_client(SOCKET sclient, char *sendbuf);
 
 //接收数据
-int recv_data_from_server(SOCKET sclient, char *recvbuf);
+int recv_data_from_client(SOCKET sclient, char *recvbuf);
 
 //关闭连接
 int close_socket(SOCKET sclient);
