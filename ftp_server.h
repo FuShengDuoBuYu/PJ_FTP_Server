@@ -6,8 +6,13 @@
 #include <string.h>
 
 #include "file_util.h"
-#define MAX_CMDLINE 1024
 void read_command_from_cmdline(char *cmdline, struct user_command *command);
+
+// 接收客户端命令
+int recv_client_command(SOCKET sock_control, struct user_command *command);
+
+// 处理客户端的命令
+void ftp_server_process(int sock_control);
 
 void print_ftp_info(int ftp_code, char *ftp_info)
 {

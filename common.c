@@ -1,4 +1,5 @@
 # include "common.h"
+# include "file_util.h"
 
 SOCKET create_tcp_socket(){
     WORD sockVersion = MAKEWORD(2,2);
@@ -11,7 +12,7 @@ SOCKET create_tcp_socket(){
     return sclient;
 }
 
-int bind_socket_local_port(SOCKET sclient, int port){
+int socket_bind(SOCKET sclient, int port){
     struct sockaddr_in clientAddr;
     clientAddr.sin_family = AF_INET;
     clientAddr.sin_port = htons(port);
@@ -27,12 +28,8 @@ int bind_socket_local_port(SOCKET sclient, int port){
     return 1;
 }
 
-int listen_to_client(SOCKET sclient, char *ip, int port){
+int socket_listen(SOCKET sclient){
     int iResult;
-    struct sockaddr_in serAddr;
-    serAddr.sin_family = AF_INET;
-    serAddr.sin_port = htons(port);
-    serAddr.sin_addr.S_un.S_addr = inet_addr(ip);
     iResult = listen(sclient, 5);
     if(iResult == SOCKET_ERROR){
         printf("listen error !");
@@ -41,6 +38,21 @@ int listen_to_client(SOCKET sclient, char *ip, int port){
         return 0;
     }
     return 1;
+}
+
+SOCKET socket_accept(SOCKET listenSocket){
+    int iResult;
+    SOCKET clientSocket = INVALID_SOCKET;
+
+    // Accept a client socket
+    clientSocket = accept(listenSocket, NULL, NULL);
+    if (clientSocket == INVALID_SOCKET) {
+        printf("accept failed: %d\n", WSAGetLastError());
+        closesocket(listenSocket);
+        WSACleanup();
+        return 1;
+    }
+    return clientSocket;
 }
 
 int send_data_to_client(SOCKET sclient, char *sendbuf){
@@ -58,7 +70,7 @@ int send_data_to_client(SOCKET sclient, char *sendbuf){
 
 int recv_data_from_client(SOCKET sclient, char *recvbuf){
     int iResult;
-    iResult = recv(sclient, recvbuf, 1024, 0);
+    iResult = recv(sclient, recvbuf, MAX_FILE_SIZE, 0);
     if(iResult == SOCKET_ERROR){
         printf("recv failed with error: %d\n", WSAGetLastError());
         closesocket(sclient);

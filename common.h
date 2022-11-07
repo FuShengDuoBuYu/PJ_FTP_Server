@@ -17,10 +17,13 @@ struct user_command{
 SOCKET create_tcp_socket();
 
 //绑定本机端口
-int bind_socket_local_port(SOCKET sclient, int port);
+int socket_bind(SOCKET sclient, int port);
 
-//连接到服务端
-int listen_to_client(SOCKET sclient, char *ip, int port);
+//开始监听
+int socket_listen(SOCKET sclient);
+
+//接受客户端的连接
+SOCKET socket_accept(SOCKET listenSocket);
 
 //发送数据
 int send_data_to_client(SOCKET sclient, char *sendbuf);
