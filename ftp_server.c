@@ -92,7 +92,16 @@ void ftp_cd(char* dirname,SOCKET sclient){
     send_data_to_client(sclient, result);
 }
 
-void ftp_mkdir(char* dirname,SOCKET sclient){}
+void ftp_mkdir(char* dirname,SOCKET sclient){
+    char* result;
+    if(!create_dir(dirname)){
+        print_ftp_info(550, "directory already exists!");
+        result = "directory already exists!";
+    } else {
+        result = "Done!";
+    }
+    send_data_to_client(sclient, result);
+}
 
 void ftp_pwd(SOCKET sclient){
     send_data_to_client(sclient, get_current_dir());

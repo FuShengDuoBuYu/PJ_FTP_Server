@@ -105,3 +105,15 @@ char* change_current_dir(char* relative_path){
         return NULL;
     }
 }
+
+// 创建新文件夹
+int create_dir(char* dir_name){
+    char* current_dir = get_current_dir();
+    strcat(current_dir, "\\");
+    strcat(current_dir, dir_name);
+    if(mkdir(current_dir) == 0){
+        return 1;
+    } else {
+        return 0;
+    }
+}

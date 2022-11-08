@@ -17,4 +17,7 @@ char* get_current_ls();
 
 // 修改当前目录
 char* change_current_dir(char* relative_path);
+
+// 创建新目录
+int create_dir(char* dir_name);
 # endif
