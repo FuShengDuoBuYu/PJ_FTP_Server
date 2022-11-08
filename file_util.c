@@ -93,3 +93,15 @@ char* get_current_ls(){
     
     return file_list;
 }
+
+char* change_current_dir(char* relative_path){
+    char* current_dir = get_current_dir();
+    strcat(current_dir, "\\");
+    strcat(current_dir, relative_path);
+    // printf("%d\n", chdir(current_dir));
+    if(chdir(current_dir) == 0){
+        return get_current_dir();
+    } else {
+        return NULL;
+    }
+}

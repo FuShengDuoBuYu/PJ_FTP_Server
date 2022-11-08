@@ -14,4 +14,7 @@ char* get_current_dir();
 
 // 获取当前目录文件
 char* get_current_ls();
+
+// 修改当前目录
+char* change_current_dir(char* relative_path);
 # endif

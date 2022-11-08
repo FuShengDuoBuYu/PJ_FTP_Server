@@ -83,7 +83,14 @@ void ftp_ls(SOCKET sclient){
     send_data_to_client(sclient, get_current_ls());
 }
 
-void ftp_cd(char* dirname,SOCKET sclient){}
+void ftp_cd(char* dirname,SOCKET sclient){
+    char* result = change_current_dir(dirname);
+    if(result == NULL){
+        print_ftp_info(550, "directory not exists!");
+        result = "directory not exists!";
+    }
+    send_data_to_client(sclient, result);
+}
 
 void ftp_mkdir(char* dirname,SOCKET sclient){}
 
