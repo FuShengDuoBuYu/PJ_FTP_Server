@@ -107,7 +107,16 @@ void ftp_pwd(SOCKET sclient){
     send_data_to_client(sclient, get_current_dir());
 }
 
-void ftp_delete(char* filename,SOCKET sclient){}
+void ftp_delete(char* filename,SOCKET sclient){
+    char* result;
+    if(!delete_file(filename)){
+        print_ftp_info(550, "file not exists!");
+        result = "file not exists!";
+    } else {
+        result = "Done!";
+    }
+    send_data_to_client(sclient, result);
+}
 
 int main(){
     struct user_command command;

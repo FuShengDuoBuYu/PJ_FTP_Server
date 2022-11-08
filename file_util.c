@@ -117,3 +117,15 @@ int create_dir(char* dir_name){
         return 0;
     }
 }
+
+// 删除文件
+int delete_file(char* file_name){
+    char* current_dir = get_current_dir();
+    strcat(current_dir, "\\");
+    strcat(current_dir, file_name);
+    if(remove(current_dir) == 0){
+        return 1;
+    } else {
+        return 0;
+    }
+}

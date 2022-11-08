@@ -20,4 +20,7 @@ char* change_current_dir(char* relative_path);
 
 // 创建新目录
 int create_dir(char* dir_name);
+
+// 删除指定文件
+int delete_file(char* file_name);
 # endif
