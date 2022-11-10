@@ -99,7 +99,7 @@ int send_file_to_client(SOCKET sclient, char *filename){
     FileInfo *file_info;
     char *send_buffer = (char *)malloc(MAX_FILE_SIZE);
     do {
-        file_info = generate_file_info(filename, send_buffer, send_buffer_index);
+        file_info = generate_file_info(filename, send_buffer, send_buffer_index, &enter_count);
         if(send_file_info_to_client(sclient, file_info) == 0){
             // TODO: 发送失败
             return 0;
@@ -113,7 +113,7 @@ int send_file_to_client(SOCKET sclient, char *filename){
 }
 
 // TODO: recv file
-int recv_file_info_from_server(SOCKET sclient, char *recvbuf){
+int recv_file_info_from_client(SOCKET sclient, char *recvbuf){
     int iResult;
     iResult = recv(sclient, recvbuf, sizeof(FileInfo), 0);
     if(iResult == SOCKET_ERROR){

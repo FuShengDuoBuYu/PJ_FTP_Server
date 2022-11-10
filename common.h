@@ -39,7 +39,7 @@ int send_file_to_client(SOCKET sclient, char *filename);
 int send_file_info_to_client(SOCKET sclient, FileInfo *sendbuf);
 
 //接收FileInfo
-int recv_file_info_from_server(SOCKET sclient, char *recvbuf);
+int recv_file_info_from_client(SOCKET sclient, char *recvbuf);
 
 //关闭连接
 int close_socket(SOCKET sclient);

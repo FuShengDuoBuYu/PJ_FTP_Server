@@ -50,15 +50,33 @@ void read_command_from_cmdline(char *cmdline, struct user_command *command){
 }
 
 void ftp_put(char* filename,SOCKET sclient){
-    // 使用recv_file_info_from_server
-    FileInfo* file_info;
+    FileInfo file_info;
+    
+    //创建tcp Socket
+    SOCKET ListenSocket = INVALID_SOCKET;
+    SOCKET ClientSocket = INVALID_SOCKET;
+    
+    //初始化ListenSocket
+    ListenSocket = create_tcp_socket();
+    //绑定端口
+    socket_bind(ListenSocket, 8001);
+    //开始监听
+    socket_listen(ListenSocket);
+    
+
+    //先发送命令
+    char command[MAX_FILE_SIZE] = "OK";
+    send_data_to_client(sclient, command);
+
+    //接收客户端的连接
+    ClientSocket = socket_accept(ListenSocket);
+
     do{
-        recv_file_info_from_server(sclient, (char*)file_info);
-        printf("file_tag: %d file_tag: %d file_tag: %s\n", file_info->file_tag, file_info->file_rmd, file_info->buffer);
-    }while(file_info->file_rmd == 0);
+        recv_file_info_from_client(ClientSocket, (char*)&file_info);
+        printf("file_tag: %d file_tag: %d file_tag: %s\n", file_info.file_tag, file_info.file_rmd, file_info.buffer);
+    }while(file_info.file_rmd == 0);
 
-    printf("file_tag: %d file_tag: %d file_tag: %s\n", file_info->file_tag, file_info->file_rmd, file_info->buffer);
-
+    closesocket(ListenSocket);
 }
 
 void ftp_quit(SOCKET sclient){
