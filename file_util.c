@@ -30,7 +30,6 @@ FileInfo* generate_file_info(const char *filename, char *buffer, int buffer_inde
     return file_info;
 }
 
-// TODO: 尾部乱码问题
 int get_file_content(const char *filename, char *buffer,int buffer_index,int *enter_count){
     FILE *fp = fopen(filename, "r");
     if(fp == NULL){
@@ -67,6 +66,27 @@ int write_file_content(const char *filename, char *buffer){
     int i = 0;
     while(buffer[i] != '\0'){
         fputc(buffer[i], fp);
+        i++;
+    }
+    fclose(fp);
+    return 1;
+}
+
+int write_file_info(const char *filename, FileInfo *file_info){
+    
+    char* dir = get_current_dir();
+    memset(file_name, 0, MAX_FILE_SIZE);
+    strcat(file_name, dir);
+    strcat(file_name, "\\");
+    strcat(file_name, filename);
+    // TODO: 文件追加写入。。。
+    FILE *fp = fopen(filename, "a+");
+    if(fp == NULL){
+        return 0;
+    }
+    int i = 0;
+    while(i<file_info->file_rmd){
+        fputc(file_info->buffer[i], fp);
         i++;
     }
     fclose(fp);

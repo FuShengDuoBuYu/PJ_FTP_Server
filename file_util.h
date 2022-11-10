@@ -4,17 +4,23 @@
 #define MAX_FILE_SIZE 512
 # include<stdio.h>
 
+// TODO: 统一命令和数据的传输格式
 typedef struct {  
     int  file_tag;  //是否最后一片标志位
     int  file_rmd;  //最后一片文件字节长度
     char buffer[MAX_FILE_SIZE+1];  //要发送的文件字节
 }FileInfo;
 
+char file_name[MAX_FILE_SIZE];  //文件名
+char* file_content;  //文件内容
+
 int file_exists(const char *filename);
 //获取文件的内容,并将内容存储到buffer中
 int get_file_content(const char *filename, char *buffer,int buffer_index,int *enter_count);
 //将buffer中的内容写入到文件中
 int write_file_content(const char *filename, char *buffer);
+
+int write_file_info(const char *filename, FileInfo *file_info);
 
 // 获取当前工作目录
 char* get_current_dir();

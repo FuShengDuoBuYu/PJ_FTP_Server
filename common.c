@@ -112,7 +112,6 @@ int send_file_to_client(SOCKET sclient, char *filename){
     return 1;
 }
 
-// TODO: recv file
 int recv_file_info_from_client(SOCKET sclient, char *recvbuf){
     int iResult;
     iResult = recv(sclient, recvbuf, sizeof(FileInfo), 0);
