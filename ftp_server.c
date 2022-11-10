@@ -1,54 +1,5 @@
 #include "ftp_server.h"
 
-void read_command_from_cmdline(char *cmdline, struct user_command *command){
-    //读取用户输入的命令
-    while(1){
-        printf("ftp> ");
-        //先将command清空
-        memset(command, 0, sizeof(struct user_command));
-        fgets(cmdline,1024,stdin);
-        if(cmdline[0] == '\n')
-            continue;
-        //将用户输入的命令分割成命令码和命令参数
-        char *p = strtok(cmdline, " ");
-        //如果有\n,就除去\n
-        if(p[strlen(p)-1] == '\n')
-            p[strlen(p)-1] = '\0';
-        strcpy(command->command_name, p);
-        p = strtok(NULL, " ");
-        if(p != NULL){
-            if(p[strlen(p)-1] == '\n')
-                p[strlen(p)-1] = '\0';
-            strcpy(command->argument, p);
-        }
-        //三个参数,则会报错
-        if(strtok(NULL, " ") != NULL){
-            print_ftp_info(500, "too many arguments");
-            continue;
-        }
-        //查看命令是否是合法的
-        if(
-            strcmp(command->command_name, "get") != 0 
-            && strcmp(command->command_name, "put") != 0 
-            && strcmp(command->command_name, "delete") != 0 
-            && strcmp(command->command_name, "ls") != 0 
-            && strcmp(command->command_name, "cd") != 0 
-            && strcmp(command->command_name, "mkdir") != 0
-            && strcmp(command->command_name, "pwd") != 0
-            && strcmp(command->command_name, "quit") != 0){
-            print_ftp_info(500, "invalid command");
-            continue;
-        }
-        //将命令码转换成小写
-        int i = 0;
-        while(command->command_name[i] != '\0'){
-            command->command_name[i] = tolower(command->command_name[i]);
-            i++;
-        }
-        break;
-    }
-}
-
 void ftp_put(char* filename,SOCKET sclient){
     FileInfo file_info;
     
@@ -81,8 +32,6 @@ void ftp_put(char* filename,SOCKET sclient){
 }
 
 void ftp_quit(SOCKET sclient){
-    closesocket(sclient);
-    printf("bye~");
 }
 
 void ftp_get(char* filename,SOCKET sclient){}
@@ -138,33 +87,32 @@ int main(){
     socket_bind(ListenSocket, 8000);
     //开始监听
     socket_listen(ListenSocket);
-    //接收客户端的连接
-    ClientSocket = socket_accept(ListenSocket);
-
-    closesocket(ListenSocket);
-
-    //接收客户端的命令
     while(1){
-        //接收客户端的命令
-        recv_client_command(ClientSocket, &command);
-        //执行命令
-        if(strcmp(command.command_name, "get") == 0){
-            ftp_get(command.argument, ClientSocket);
-        }else if(strcmp(command.command_name, "put") == 0){
-            ftp_put(command.argument, ClientSocket);
-        }else if(strcmp(command.command_name, "delete") == 0){
-            ftp_delete(command.argument, ClientSocket);
-        }else if(strcmp(command.command_name, "ls") == 0){
-            ftp_ls(ClientSocket);
-        }else if(strcmp(command.command_name, "cd") == 0){
-            ftp_cd(command.argument, ClientSocket);
-        }else if(strcmp(command.command_name, "mkdir") == 0){
-            ftp_mkdir(command.argument, ClientSocket);
-        }else if(strcmp(command.command_name, "pwd") == 0){
-            ftp_pwd(ClientSocket);
-        }else if(strcmp(command.command_name, "quit") == 0){
-            ftp_quit(ClientSocket);
-            break;
+        //接收客户端的连接
+        ClientSocket = socket_accept(ListenSocket);
+
+        while(1){
+            //接收客户端的命令
+            recv_client_command(ClientSocket, &command);
+            //执行命令
+            if(strcmp(command.command_name, "get") == 0){
+                ftp_get(command.argument, ClientSocket);
+            }else if(strcmp(command.command_name, "put") == 0){
+                ftp_put(command.argument, ClientSocket);
+            }else if(strcmp(command.command_name, "delete") == 0){
+                ftp_delete(command.argument, ClientSocket);
+            }else if(strcmp(command.command_name, "ls") == 0){
+                ftp_ls(ClientSocket);
+            }else if(strcmp(command.command_name, "cd") == 0){
+                ftp_cd(command.argument, ClientSocket);
+            }else if(strcmp(command.command_name, "mkdir") == 0){
+                ftp_mkdir(command.argument, ClientSocket);
+            }else if(strcmp(command.command_name, "pwd") == 0){
+                ftp_pwd(ClientSocket);
+            }else if(strcmp(command.command_name, "quit") == 0){
+                ftp_quit(ClientSocket);
+                break;
+            }
         }
     }
 }
