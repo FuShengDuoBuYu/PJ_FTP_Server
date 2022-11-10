@@ -56,8 +56,6 @@ void ftp_put(char* filename,SOCKET sclient){
     SOCKET ListenSocket = INVALID_SOCKET;
     SOCKET ClientSocket = INVALID_SOCKET;
     
-printf("ftp> put\n");
-
     //初始化ListenSocket
     ListenSocket = create_tcp_socket();
     //绑定端口
@@ -65,18 +63,13 @@ printf("ftp> put\n");
     //开始监听
     socket_listen(ListenSocket);
 
-printf("ftp> put\n");
-
-
     //TODO: 接收文件大小 分配空间 之后再发送OK命令
     //TODO: 状态码和状态机
     //先发送命令
     char command[MAX_FILE_SIZE] = "OK";
     send_data_to_client(sclient, command);
-printf("ftp> put3\n");
     //接收客户端的连接
     ClientSocket = socket_accept(ListenSocket);
-printf("ftp> put4\n");
 
     do{
         recv_file_info_from_client(ClientSocket, (char*)&file_info);
