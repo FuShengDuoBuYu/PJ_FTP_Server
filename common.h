@@ -5,6 +5,7 @@
 #include<winsock2.h>
 #pragma comment(lib,"ws2_32.lib")
 #include <stdio.h>
+#include "file_util.h"
 
 struct user_command{
     //命令后的参数
@@ -30,6 +31,15 @@ int send_data_to_client(SOCKET sclient, char *sendbuf);
 
 //接收数据
 int recv_data_from_client(SOCKET sclient, char *recvbuf);
+
+//生成FileInfo并发送
+int send_file_to_client(SOCKET sclient, char *filename);
+
+//发送FileInfo
+int send_file_info_to_client(SOCKET sclient, FileInfo *sendbuf);
+
+//接收FileInfo
+int recv_file_info_from_server(SOCKET sclient, char *recvbuf);
 
 //关闭连接
 int close_socket(SOCKET sclient);
