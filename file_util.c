@@ -1,8 +1,5 @@
 # include "file_util.h"
-#include <stdlib.h>
-#include <string.h>
-#include <direct.h>
-#include <io.h>
+
 
 int file_exists(const char *filename){
     printf("file %s\n", filename);
@@ -73,14 +70,9 @@ int write_file_content(const char *filename, char *buffer){
 }
 
 int write_file_info(const char *filename, FileInfo *file_info){
-    
-    char* dir = get_current_dir();
-    memset(file_name, 0, MAX_FILE_SIZE);
-    strcat(file_name, dir);
-    strcat(file_name, "\\");
-    strcat(file_name, filename);
+
     // TODO: 文件追加写入。。。
-    FILE *fp = fopen(filename, "a+");
+    FILE *fp = fopen(filename, "a");
     if(fp == NULL){
         return 0;
     }

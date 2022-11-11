@@ -5,10 +5,12 @@
 #include <stdio.h>
 #include <string.h>
 
+
 #include "file_util.h"
 
+
 // 接收客户端命令
-int recv_client_command(SOCKET sock_control, struct user_command *command);
+int recv_client_command(SOCKET sock_control, MsgHeader *msgHeader);
 
 // 处理客户端的命令
 void ftp_server_process(int sock_control);
@@ -18,7 +20,7 @@ void print_ftp_info(int ftp_code, char *ftp_info)
     printf("Error: %d %s\n", ftp_code, ftp_info);
 }
 
-void ftp_put(char *filename, SOCKET sclient);
+void ftp_put(MsgHeader *filename, SOCKET sclient);
 
 void ftp_get(char *filename, SOCKET sclient);
 

@@ -14,6 +14,48 @@ struct user_command{
     char command_name[255];
 };
 
+
+// 定义标记
+enum MSGTAG
+{
+	MSG_FILEINFO       = 1,        // 文件名称                服务器使用
+	MSG_DIRINFO       = 2,        // 文件夹名称
+	MSG_READY     = 3,        // 准备接受                客户端使用
+	MSG_SEND       = 4,        // 发送                    服务器使用
+	MSG_SUCCESSED      = 5,        // 传输完成                两者都使用
+	MSG_FAILED = 6,         // 告诉客户端文件找不到    客户端使用
+    MSG_INVAILD_FILENAME = 7 // 告诉客户端文件名不合法  
+};
+
+// 定义标命令
+enum MSGTYPE
+{
+	MSGTYPE_GET = 1,        // 获取文件
+    MSGTYPE_PUT = 2,        // 上传文件
+    MSGTYPE_LS  = 3,        // 列出文件
+    MSGTYPE_CD  = 4,        // 切换目录
+    MSGTYPE_PWD = 5,        // 显示当前目录
+    MSGTYPE_MKDIR= 6,         // 退出
+    MSGTYPE_DELETE= 7,         // 退出
+    MSGTYPE_QUIT= 8         // 退出
+};
+
+typedef struct                  // 封装消息头
+{
+	enum MSGTAG msgID;             // 当前消息标记   4
+    enum MSGTYPE msgType;          // 当前消息类型   4
+	union MyUnion
+	{
+		struct Mystruct
+		{
+			int fileSize;           // 文件大小  4
+			char argument[MAX_FILE_SIZE];     // 文件名    256
+		}commandInfo;
+		FileInfo fileData;          // 文件数据
+	} info;
+ 
+}MsgHeader;
+
 //创建一个TCP连接
 SOCKET create_tcp_socket();
 
@@ -36,10 +78,10 @@ int recv_data_from_client(SOCKET sclient, char *recvbuf);
 int send_file_to_client(SOCKET sclient, char *filename);
 
 //发送FileInfo
-int send_file_info_to_client(SOCKET sclient, FileInfo *sendbuf);
+int send_file_info_to_client(SOCKET sclient, MsgHeader *sendbuf);
 
 //接收FileInfo
-int recv_file_info_from_client(SOCKET sclient, char *recvbuf);
+int recv_file_info_from_client(SOCKET sclient, MsgHeader *recvbuf);
 
 //关闭连接
 int close_socket(SOCKET sclient);
