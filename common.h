@@ -62,6 +62,12 @@ int socket_listen(SOCKET sclient);
 //接受客户端的连接
 SOCKET socket_accept(SOCKET listenSocket);
 
+//绑定本机端口
+int bind_socket_local_port(SOCKET sclient, int port);
+
+//连接到服务端
+int connect_to_server(SOCKET sclient, char *ip, int port);
+
 //发送数据
 int send_data_to_client(SOCKET sclient, char *sendbuf);
 
@@ -72,7 +78,7 @@ int recv_data_from_client(SOCKET sclient, char *recvbuf);
 int send_file_to_client(SOCKET sclient, char *filename);
 
 //发送FileInfo
-int send_file_info_to_client(SOCKET sclient, MsgHeader *sendbuf);
+int send_file_info_to_client(SOCKET sclient, char *sendbuf);
 
 //接收FileInfo
 int recv_file_info_from_client(SOCKET sclient, MsgHeader *recvbuf);

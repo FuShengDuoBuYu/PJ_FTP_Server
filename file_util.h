@@ -13,7 +13,7 @@ typedef struct {
     int  file_tag;  //是否最后一片标志位
     int  file_rmd;  //最后一片文件字节长度
     int file_order; //文件分块的序号
-    int enter_space; //换行符的个数
+    int enter_count; //换行符的个数
     char buffer[MAX_FILE_SIZE];  //要发送的文件字节
 }FileInfo;
 
