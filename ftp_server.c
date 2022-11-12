@@ -11,7 +11,7 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
         strcat(file_name, msgHeader->info.commandInfo.argument);
         FILE *fp = fopen(file_name, "r");
         if(fp != NULL){
-            msgHeader->msgID = MSG_INVAILD_FILENAME;
+            msgHeader->msgID = MSG_INVALID_FILENAME;
             msgHeader->msgType = MSGTYPE_PUT;
             strcpy(msgHeader->info.commandInfo.argument, "File name is exist!");
             send_data_to_client(sclient, (char *)msgHeader);
@@ -65,17 +65,23 @@ void ftp_ls(SOCKET sclient){
     memset(&msgHeader, 0, sizeof(msgHeader));
     msgHeader.msgID = MSG_SUCCESSED;
     msgHeader.msgType = MSGTYPE_LS;
-    strcpy(msgHeader.info.fileData.buffer, get_current_ls());
+    strcpy(msgHeader.info.commandInfo.argument, get_current_ls());
     send_data_to_client(sclient, (char*)&msgHeader);
 }
 
 void ftp_cd(char* dirname,SOCKET sclient){
-    char* result = change_current_dir(dirname);
-    if(result == NULL){
-        print_ftp_info(550, "directory not exists!");
-        result = "directory not exists!";
+    MsgHeader msgHeader;
+    memset(&msgHeader, 0, sizeof(msgHeader));
+    msgHeader.msgType = MSGTYPE_CD;
+    char* res = change_current_dir(dirname);
+    if(res == NULL){
+        msgHeader.msgID = MSG_INVALID_DIR;
+        strcpy(msgHeader.info.commandInfo.argument, "directory not exists!");
+    } else {
+        msgHeader.msgID = MSG_SUCCESSED;
+        strcpy(msgHeader.info.commandInfo.argument, res);
     }
-    send_data_to_client(sclient, result);
+    send_data_to_client(sclient, (char*)&msgHeader);
 }
 
 void ftp_mkdir(char* dirname,SOCKET sclient){
@@ -105,7 +111,6 @@ void ftp_delete(char* filename,SOCKET sclient){
 }
 
 int main(){
-    struct user_command command;
     MsgHeader msgHeader;
     //创建tcp Socket
     SOCKET ListenSocket = INVALID_SOCKET;
@@ -127,61 +132,41 @@ int main(){
             printf("msgID: %d", msgHeader.msgID);
             switch (msgHeader.msgType)
             {
-            case MSGTYPE_PUT:
-                /* code */
-                ftp_put(&msgHeader, ClientSocket);
-                break;
-            case MSGTYPE_GET:
-                /* code */
-                ftp_get(msgHeader.info.commandInfo.argument, ClientSocket);
-                break;
-            case MSGTYPE_LS:
-                /* code */
-                ftp_ls(ClientSocket);
-                break;
-            case MSGTYPE_CD:
-                /* code */
-                ftp_cd(msgHeader.info.commandInfo.argument, ClientSocket);
-                break;
-            case MSGTYPE_MKDIR:
-                /* code */
-                ftp_mkdir(msgHeader.info.commandInfo.argument, ClientSocket);
-                break;
-            case MSGTYPE_PWD:
-                /* code */
-                ftp_pwd(ClientSocket);
-                break;
-            case MSGTYPE_DELETE:
-                /* code */
-                ftp_delete(msgHeader.info.commandInfo.argument, ClientSocket);
-                break;
-            case MSGTYPE_QUIT:
-                /* code */
-                ftp_quit(ClientSocket);
-                break;
-            default:
-                break;
+                case MSGTYPE_PUT:
+                    /* code */
+                    ftp_put(&msgHeader, ClientSocket);
+                    break;
+                case MSGTYPE_GET:
+                    /* code */
+                    ftp_get(msgHeader.info.commandInfo.argument, ClientSocket);
+                    break;
+                case MSGTYPE_LS:
+                    /* code */
+                    ftp_ls(ClientSocket);
+                    break;
+                case MSGTYPE_CD:
+                    /* code */
+                    ftp_cd(msgHeader.info.commandInfo.argument, ClientSocket);
+                    break;
+                case MSGTYPE_MKDIR:
+                    /* code */
+                    ftp_mkdir(msgHeader.info.commandInfo.argument, ClientSocket);
+                    break;
+                case MSGTYPE_PWD:
+                    /* code */
+                    ftp_pwd(ClientSocket);
+                    break;
+                case MSGTYPE_DELETE:
+                    /* code */
+                    ftp_delete(msgHeader.info.commandInfo.argument, ClientSocket);
+                    break;
+                case MSGTYPE_QUIT:
+                    /* code */
+                    ftp_quit(ClientSocket);
+                    break;
+                default:
+                    break;
             }
-            printf("out while is break\n");
-            //执行命令
-            // if(strcmp(command.command_name, "get") == 0){
-            //     ftp_get(command.argument, ClientSocket);
-            // }else if(strcmp(command.command_name, "put") == 0){
-            //     ftp_put(command.argument, ClientSocket);
-            // }else if(strcmp(command.command_name, "delete") == 0){
-            //     ftp_delete(command.argument, ClientSocket);
-            // }else if(strcmp(command.command_name, "ls") == 0){
-            //     ftp_ls(ClientSocket);
-            // }else if(strcmp(command.command_name, "cd") == 0){
-            //     ftp_cd(command.argument, ClientSocket);
-            // }else if(strcmp(command.command_name, "mkdir") == 0){
-            //     ftp_mkdir(command.argument, ClientSocket);
-            // }else if(strcmp(command.command_name, "pwd") == 0){
-            //     ftp_pwd(ClientSocket);
-            // }else if(strcmp(command.command_name, "quit") == 0){
-            //     ftp_quit(ClientSocket);
-            //     break;
-            // }
         }
     }
 }

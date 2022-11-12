@@ -7,14 +7,6 @@
 #include <stdio.h>
 #include "file_util.h"
 
-struct user_command{
-    //命令后的参数
-    char argument[255];
-    //命令名称
-    char command_name[255];
-};
-
-
 // 定义标记
 enum MSGTAG
 {
@@ -24,7 +16,8 @@ enum MSGTAG
 	MSG_SEND       = 4,        // 发送                    服务器使用
 	MSG_SUCCESSED      = 5,        // 传输完成                两者都使用
 	MSG_FAILED = 6,         // 告诉客户端文件找不到    客户端使用
-    MSG_INVAILD_FILENAME = 7 // 告诉客户端文件名不合法  
+    MSG_INVALID_FILENAME = 7, // 告诉客户端文件名不合法  
+    MSG_INVALID_DIR = 8 // 告诉客户端文件名不合法  
 };
 
 // 定义标命令
