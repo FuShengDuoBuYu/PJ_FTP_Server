@@ -154,10 +154,10 @@ int create_dir(char* dir_name){
 }
 
 // 删除文件
-int delete_file(char* file_name){
+int delete_file(char* filename){
     char* current_dir = get_current_dir();
     strcat(current_dir, "\\");
-    strcat(current_dir, file_name);
+    strcat(current_dir, filename);
     if(remove(current_dir) == 0){
         return 1;
     } else {

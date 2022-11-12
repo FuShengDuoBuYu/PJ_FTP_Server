@@ -17,9 +17,6 @@ typedef struct {
     char buffer[MAX_FILE_SIZE+1];  //要发送的文件字节
 }FileInfo;
 
-char file_name[MAX_FILE_SIZE];  //文件名
-char* file_content;  //文件内容
-
 int file_exists(const char *filename);
 //获取文件的内容,并将内容存储到buffer中
 int get_file_content(const char *filename, char *buffer,int buffer_index,int *enter_count);

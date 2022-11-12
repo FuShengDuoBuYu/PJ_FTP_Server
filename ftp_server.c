@@ -2,7 +2,7 @@
 #include "common.h"
 
 void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
-    printf("ftp_put %d\n",msgHeader->msgID);
+    char file_name[MAX_FILE_SIZE];
     if(msgHeader->msgID = MSG_FILEINFO){
         char* dir = get_current_dir();
         memset(file_name, 0, MAX_FILE_SIZE);
@@ -13,7 +13,7 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
         if(fp != NULL){
             msgHeader->msgID = MSG_INVALID_FILENAME;
             msgHeader->msgType = MSGTYPE_PUT;
-            strcpy(msgHeader->info.commandInfo.argument, "File name is exist!");
+            strcpy(msgHeader->info.commandInfo.argument, "file already exists!");
             send_data_to_client(sclient, (char *)msgHeader);
             return;
         }
@@ -75,7 +75,7 @@ void ftp_cd(char* dirname,SOCKET sclient){
     msgHeader.msgType = MSGTYPE_CD;
     char* res = change_current_dir(dirname);
     if(res == NULL){
-        msgHeader.msgID = MSG_INVALID_DIR;
+        msgHeader.msgID = MSG_FAILED;
         strcpy(msgHeader.info.commandInfo.argument, "directory not exists!");
     } else {
         msgHeader.msgID = MSG_SUCCESSED;
@@ -85,29 +85,42 @@ void ftp_cd(char* dirname,SOCKET sclient){
 }
 
 void ftp_mkdir(char* dirname,SOCKET sclient){
-    char* result;
+    MsgHeader msgHeader;
+    memset(&msgHeader, 0, sizeof(msgHeader));
+    msgHeader.msgType = MSGTYPE_MKDIR;
     if(!create_dir(dirname)){
         print_ftp_info(550, "directory already exists!");
-        result = "directory already exists!";
+        msgHeader.msgID = MSG_FAILED;
+        strcpy(msgHeader.info.commandInfo.argument, "directory already exists!");
     } else {
-        result = "Done!";
+        msgHeader.msgID = MSG_SUCCESSED;
+        strcpy(msgHeader.info.commandInfo.argument, "directory created!");
     }
-    send_data_to_client(sclient, result);
+    send_data_to_client(sclient, (char*)&msgHeader);
 }
 
 void ftp_pwd(SOCKET sclient){
-    send_data_to_client(sclient, get_current_dir());
+    MsgHeader msgHeader;
+    memset(&msgHeader, 0, sizeof(msgHeader));
+    msgHeader.msgID = MSG_SUCCESSED;
+    msgHeader.msgType = MSGTYPE_PWD;
+    strcpy(msgHeader.info.commandInfo.argument, get_current_dir());
+    send_data_to_client(sclient, (char*)&msgHeader);
 }
 
 void ftp_delete(char* filename,SOCKET sclient){
-    char* result;
+    MsgHeader msgHeader;
+    memset(&msgHeader, 0, sizeof(msgHeader));
+    msgHeader.msgType = MSGTYPE_DELETE;
     if(!delete_file(filename)){
         print_ftp_info(550, "file not exists!");
-        result = "file not exists!";
+        msgHeader.msgID = MSG_FAILED;
+        strcpy(msgHeader.info.commandInfo.argument, "file not exists!");
     } else {
-        result = "Done!";
+        msgHeader.msgID = MSG_SUCCESSED;
+        strcpy(msgHeader.info.commandInfo.argument, "file deleted!");
     }
-    send_data_to_client(sclient, result);
+    send_data_to_client(sclient, (char*)&msgHeader);
 }
 
 int main(){
@@ -125,11 +138,11 @@ int main(){
     while(1){
         //接收客户端的连接
         ClientSocket = socket_accept(ListenSocket);
-
-        while(1){
+        int quit = 0;
+        while(!quit){
             //接收客户端的命令
             recv_client_command(ClientSocket, &msgHeader);
-            printf("msgID: %d", msgHeader.msgID);
+            printf("msgID: %d\n", msgHeader.msgID);
             switch (msgHeader.msgType)
             {
                 case MSGTYPE_PUT:
@@ -163,6 +176,7 @@ int main(){
                 case MSGTYPE_QUIT:
                     /* code */
                     ftp_quit(ClientSocket);
+                    quit = 1;
                     break;
                 default:
                     break;
@@ -184,47 +198,4 @@ int recv_client_command(SOCKET sock_control, MsgHeader * msgHeader)
 		perror("recv error\n"); 
 		return -1;
 	}
-    //解析命令
-    
-    // if(buffer[0] == '\n'){
-    //     return 0;
-    // }
-    // //将用户输入的命令分割成命令码和命令参数
-    // char *p = strtok(buffer, " ");
-    // //如果有\n,就除去\n
-    // if(p[strlen(p)-1] == '\n')
-    //     p[strlen(p)-1] = '\0';
-    // strcpy(command->command_name, p);
-    // p = strtok(NULL, " ");
-    // if(p != NULL){
-    //     if(p[strlen(p)-1] == '\n')
-    //         p[strlen(p)-1] = '\0';
-    //     strcpy(command->argument, p);
-    // }
-    // //三个参数,则会报错
-    // if(strtok(NULL, " ") != NULL){
-    //     print_ftp_info(500, "too many arguments");
-    //     return 0;
-    // }
-    // //查看命令是否是合法的
-    // if(
-    //     strcmp(command->command_name, "get") != 0 
-    //     && strcmp(command->command_name, "put") != 0 
-    //     && strcmp(command->command_name, "delete") != 0 
-    //     && strcmp(command->command_name, "ls") != 0 
-    //     && strcmp(command->command_name, "cd") != 0 
-    //     && strcmp(command->command_name, "mkdir") != 0
-    //     && strcmp(command->command_name, "pwd") != 0
-    //     && strcmp(command->command_name, "quit") != 0){
-    //     print_ftp_info(500, "invalid command");
-    // }
-    // printf("command_name:%s, argument:%s\n", command->command_name, command->argument);
-
-    // //将命令码转换成小写
-    // int i = 0;
-    // while(command->command_name[i] != '\0'){
-    //     command->command_name[i] = tolower(command->command_name[i]);
-    //     i++;
-    // }
-	// return rc;
 }
