@@ -17,7 +17,7 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
             return;
         }
     }
-    printf("file_name");
+    // printf("file_name");
         
     FileInfo file_info;
     //创建tcp Socket
@@ -43,7 +43,7 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
     do{
         recv_file_info_from_client(ClientSocket, msgHeader);
         FileType fileType = (msgHeader->msgID == MSG_SEND_BINARY) ? BINARY_FILE : TEXT_FILE;
-printf("fileType: %d\n", fileType);
+// printf("fileType: %d\n", fileType);
         write_file_info(file_name, &msgHeader->info.fileData, fileType);
         msgHeader->msgID = msgHeader->msgID;
         if (msgHeader->info.fileData.file_tag == 1){

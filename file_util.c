@@ -11,6 +11,22 @@ int file_exists(const char *filename){
     return 1;
 }
 
+FileType is_binary_file(const char *filename){
+    FILE *fp = fopen(filename, "rb");
+    if(fp == NULL){
+        return 0;
+    }
+    char buf[4*MAX_FILE_SIZE];
+    int n = fread(buf, 1, 4*MAX_FILE_SIZE, fp);
+    fclose(fp);
+    for(int i = 0; i < n; i++){
+        if(buf[i] == '\0'){
+            return BINARY_FILE;
+        }
+    }
+    return TEXT_FILE;
+}
+
 int get_file_content(const char *filename, char *buffer,int buffer_index,int *enter_count){
     FILE *fp = fopen(filename, "r");
     if(fp == NULL){
@@ -99,16 +115,18 @@ char* get_current_ls(){
 
     int i = 1;
     strcat(file_list, fileinfo.name);
-    strcat(file_list, "\t\t");
+    // strcat(file_list, "\t\t");
+    strcat(file_list, "  ");
 	while(!_findnext(handle,&fileinfo)) //循环查找其他符合的文件，知道找不到其他的为止
 	{
         i++;
         strcat(file_list, fileinfo.name);
-        if(i%3 == 0){
-            strcat(file_list, "\n");
-        } else {
-            strcat(file_list, "\t\t");
-        }
+        // if(i%3 == 0){
+        //     strcat(file_list, "\n");
+        // } else {
+        //     strcat(file_list, "\t\t");
+        // }
+        strcat(file_list, "  ");
 		// printf("%s\n",fileinfo.name);
 	}
 	_findclose(handle); //别忘了关闭句柄
@@ -145,6 +163,7 @@ int delete_file(char* filename){
     char* current_dir = get_current_dir();
     strcat(current_dir, "\\");
     strcat(current_dir, filename);
+    printf("delete: %s\n", current_dir);
     if(remove(current_dir) == 0){
         return 1;
     } else {

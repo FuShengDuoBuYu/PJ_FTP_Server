@@ -64,7 +64,7 @@ int send_data_to_client(SOCKET sclient, char *sendbuf){
         WSACleanup();
         return 0;
     }
-    printf("Bytes Sent: %ld\n", iResult);
+    // printf("Bytes Sent: %ld\n", iResult);
     return 1;
 }
 
@@ -77,7 +77,7 @@ int recv_data_from_client(SOCKET sclient, char *recvbuf){
         WSACleanup();
         return 0;
     }
-    printf("Bytes Recv: %ld\n", iResult);
+    // printf("Bytes Recv: %ld\n", iResult);
     return 1;
 }
 
@@ -90,7 +90,7 @@ int send_file_info_to_client(SOCKET sclient, MsgHeader *sendbuf){
         WSACleanup();
         return 0;
     }
-    printf("Bytes Sent: %ld\n", iResult);
+    // printf("Bytes Sent: %ld\n", iResult);
     return 1;
 }
 
@@ -103,7 +103,7 @@ int recv_file_info_from_client(SOCKET sclient, MsgHeader *recvbuf){
         WSACleanup();
         return 0;
     }
-    printf("Bytes Recv: %ld\n", iResult);
+    // printf("Bytes Recv: %ld\n", iResult);
     return 1;
 }
 
