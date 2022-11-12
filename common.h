@@ -13,11 +13,12 @@ enum MSGTAG
 	MSG_FILEINFO       = 1,        // 文件名称                服务器使用
 	MSG_DIRINFO       = 2,        // 文件夹名称
 	MSG_READY     = 3,        // 准备接受                客户端使用
-	MSG_SEND       = 4,        // 发送                    服务器使用
-	MSG_SUCCESSED      = 5,        // 传输完成                两者都使用
-	MSG_FAILED = 6,         // 告诉客户端文件找不到    客户端使用
-    MSG_INVALID_FILENAME = 7, // 告诉客户端文件名不合法  
-    MSG_INVALID_DIR = 8 // 告诉客户端文件名不合法  
+	MSG_SEND_ASCII       = 4,        // 发送                    服务器使用
+	MSG_SEND_BINARY       = 5,        // 发送                    服务器使用
+	MSG_SUCCESSED      = 6,        // 传输完成                两者都使用
+	MSG_FAILED = 7,         // 告诉客户端文件找不到    客户端使用
+    MSG_INVALID_FILENAME = 8, // 告诉客户端文件名不合法  
+    MSG_INVALID_DIR = 9 // 告诉客户端文件名不合法  
 };
 
 // 定义标命令

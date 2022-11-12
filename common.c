@@ -92,26 +92,6 @@ int send_file_info_to_client(SOCKET sclient, MsgHeader *sendbuf){
     return 1;
 }
 
-// int send_file_to_client(SOCKET sclient, char *filename){
-//     // 使用generate_file_info生成FileInfo结构体，然后发送
-//     int send_buffer_index = 0;
-//     int enter_count = 0;
-//     FileInfo *file_info;
-//     char *send_buffer = (char *)malloc(MAX_FILE_SIZE);
-//     do {
-//         file_info = generate_file_info(filename, send_buffer, send_buffer_index, &enter_count);
-//         if(send_file_info_to_client(sclient, file_info) == 0){
-//             // TODO: 发送失败
-//             return 0;
-//         }
-//         memset(send_buffer, 0, sizeof(send_buffer));
-//         free(file_info);
-//         send_buffer_index++;
-//     } while(file_info->file_tag == 0);
-
-//     return 1;
-// }
-
 int recv_file_info_from_client(SOCKET sclient, MsgHeader *recvbuf){
     int iResult;
     iResult = recv(sclient, (char*)recvbuf, sizeof(MsgHeader), 0);

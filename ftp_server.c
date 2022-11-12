@@ -2,7 +2,6 @@
 #include "common.h"
 
 void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
-    char file_name[MAX_FILE_SIZE];
     if(msgHeader->msgID = MSG_FILEINFO){
         char* dir = get_current_dir();
         memset(file_name, 0, MAX_FILE_SIZE);
@@ -43,8 +42,10 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
     ClientSocket = socket_accept(ListenSocket);
     do{
         recv_file_info_from_client(ClientSocket, msgHeader);
-        write_file_info(file_name, &msgHeader->info.fileData);
-        msgHeader->msgID = MSG_SEND;
+        FileType fileType = (msgHeader->msgID == MSG_SEND_BINARY) ? BINARY_FILE : TEXT_FILE;
+printf("fileType: %d\n", fileType);
+        write_file_info(file_name, &msgHeader->info.fileData, fileType);
+        msgHeader->msgID = msgHeader->msgID;
         if (msgHeader->info.fileData.file_tag == 1){
             msgHeader->msgID = MSG_SUCCESSED;
         }
