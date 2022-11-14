@@ -8,7 +8,6 @@
 #include <direct.h>
 #include <io.h>
 
-// TODO: 统一命令和数据的传输格式
 typedef struct {  
     int  file_tag;  //是否最后一片标志位
     int  file_rmd;  //最后一片文件字节长度

@@ -27,17 +27,13 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
     //初始化ListenSocket
     ListenSocket = create_tcp_socket();
     //绑定端口
+    // TODO: 修改为大于1024的随机端口，并把端口号放进msgHeader.commandInfo.argument中供client接收
     socket_bind(ListenSocket, 8001);
     //开始监听
     socket_listen(ListenSocket);
     msgHeader->msgID = MSG_READY;
     msgHeader->msgType = MSGTYPE_PUT;
     send_data_to_client(sclient, (char*)msgHeader);
-    //TODO: 接收文件大小 分配空间 之后再发送OK命令
-    //TODO: 状态码和状态机
-    //先发送命令
-    // char command[MAX_FILE_SIZE] = "OK";
-    // send_data_to_client(sclient, command);
     //接收客户端的连接
     ClientSocket = socket_accept(ListenSocket);
     do{
@@ -104,6 +100,7 @@ void ftp_get(char* filename,SOCKET sclient){
     //初始化ListenSocket
     ListenSocket = create_tcp_socket();
     //绑定端口,发送返回数据
+    // TODO: 修改为大于1024的随机端口，并把端口号放进msgHeader.commandInfo.argument中供client接收
     socket_bind(ListenSocket, 8002);
     
     //开始监听
