@@ -28,7 +28,12 @@ void ftp_put(MsgHeader* msgHeader,SOCKET sclient){
     ListenSocket = create_tcp_socket();
     //绑定端口
     // TODO: 修改为大于1024的随机端口，并把端口号放进msgHeader.commandInfo.argument中供client接收
-    socket_bind(ListenSocket, 8001);
+    srand(time(NULL));
+    int randomPort = rand() % 10000 + 1024;
+    ////用char数组存储端口号,char整数范围为-128~127，所以用两个char存储一个int，要mod127
+    msgHeader->info.commandInfo.argument[0] = randomPort%127;
+    msgHeader->info.commandInfo.argument[1] = randomPort/127;
+    socket_bind(ListenSocket, randomPort);
     //开始监听
     socket_listen(ListenSocket);
     msgHeader->msgID = MSG_READY;
@@ -101,8 +106,12 @@ void ftp_get(char* filename,SOCKET sclient){
     ListenSocket = create_tcp_socket();
     //绑定端口,发送返回数据
     // TODO: 修改为大于1024的随机端口，并把端口号放进msgHeader.commandInfo.argument中供client接收
-    socket_bind(ListenSocket, 8002);
-    
+    srand(time(NULL));
+    int randomPort = rand() % 10000 + 1024;
+    //用char数组存储端口号,char整数范围为-128~127，所以用两个char存储一个int，要mod127
+    msgHeader.info.commandInfo.argument[0] = randomPort%127;
+    msgHeader.info.commandInfo.argument[1] = randomPort/127;
+    socket_bind(ListenSocket, randomPort);
     //开始监听
     socket_listen(ListenSocket);
     send_data_to_client(sclient, (char*)&msgHeader);
